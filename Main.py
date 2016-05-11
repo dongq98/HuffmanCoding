@@ -6,17 +6,21 @@ import json
 import HuffmanCode
 
 class Application(Frame):
+
   # GUI settings
   def __init__(self):
     Frame.__init__(self)
 
+    # App variables
     self.paths = {}
     self.files = {}
     self.paths['comp'] = StringVar()
     self.paths['dcmp'] = StringVar()
     self.paths['huff'] = StringVar()
 
-    # Basic settings
+    # =========================
+
+    # Basic GUI settings
     self.master.title("Huffman Coding")
     self.master.resizable(width = FALSE, height = FALSE)
     self.grid()
@@ -31,25 +35,35 @@ class Application(Frame):
     self.tabs.add(self.decomp, text = 'Decompress')
     self.tabs.grid(row = 0, column = 1, pady = 5)
 
-    # Menu / Compression
+    # =========================
+    #  Menu / Compression
+    # =========================
+
     self.comp.grid_columnconfigure(0, weight = 1)
-    self.comp.grid_rowconfigure(2, weight = 1)
-    self.comp.grid_rowconfigure(3, weight = 1)
+
+    # File input UI label frame
     self.comp.files = LabelFrame(self.comp, text = 'File input')
     self.comp.files.grid(row = 0, column = 0, padx = 7, pady = 5, ipady = 2, sticky = W+E)
 
-    self.comp.files.grid_columnconfigure(2, weight = 1)
     Label(self.comp.files, text = 'Input').grid(row = 0, column = 0)
-    self.comp.files.openInput = Button(self.comp.files, text = 'open', width = 0,
+
+    ## Open button
+    self.comp.files.openButton = Button(self.comp.files, text = 'open', width = 0,
         command = lambda: self.openFile('comp'))
+    self.comp.files.openButton.grid(row = 0, column = 1)
+    
+    ## Entry for displaying file path
     self.comp.files.inputPathEntry = Entry(self.comp.files, state = 'readonly',
         textvariable = self.paths['comp'])
-    self.comp.files.openInput.grid(row = 0, column = 1)
     self.comp.files.inputPathEntry.grid(row = 0, column = 2, padx = 5, sticky = W+E)
+    self.comp.files.grid_columnconfigure(2, weight = 1)
 
+    # Compress button
     self.comp.execute = Button(self.comp, text = 'Compress!', command = self.compress)
     self.comp.execute.grid(row = 1, column = 0, padx = 5, pady = 2, sticky = W+E)
 
+    # Text widgets
+    ## Original text (before compressed)
     self.comp.original = Frame(self.comp)
     self.comp.original.grid(row = 2, column = 0, pady = 2, stick = W+E+N+S)
     self.comp.original.grid_rowconfigure(0, weight = 1)
@@ -60,7 +74,9 @@ class Application(Frame):
         yscrollcommand = self.comp.original.scroll.set)
     self.comp.original.box.grid(row = 0, column = 0, stick = W+E+N+S)
     self.comp.original.scroll.config(command = self.comp.original.box.yview)
+    self.comp.grid_rowconfigure(2, weight = 1)
 
+    ## Compressed text
     self.comp.compressed = Frame(self.comp)
     self.comp.compressed.grid(row = 3, column = 0, pady = 2, stick = W+E+N+S)
     self.comp.compressed.grid_rowconfigure(0, weight = 1)
@@ -71,6 +87,14 @@ class Application(Frame):
         yscrollcommand = self.comp.compressed.scroll.set)
     self.comp.compressed.box.grid(row = 0, column = 0, stick = W+E+N+S)
     self.comp.compressed.scroll.config(command = self.comp.compressed.box.yview)
+    self.comp.grid_rowconfigure(3, weight = 1)
+
+    # =========================
+    #  Menu / Decompression
+    # =========================
+
+    pass
+
 
   def display(self, textBox, text):
     textBox.delete("1.0", END)
