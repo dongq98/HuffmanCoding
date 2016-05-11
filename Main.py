@@ -17,9 +17,7 @@ class Application(Frame):
     self.paths['comp'] = StringVar()
     self.paths['dcmp'] = StringVar()
     self.paths['huff'] = StringVar()
-
-    # =========================
-
+    
     # Basic GUI settings
     self.master.title("Huffman Coding")
     self.master.resizable(width = FALSE, height = FALSE)
@@ -93,7 +91,66 @@ class Application(Frame):
     #  Menu / Decompression
     # =========================
 
-    pass
+    self.decomp.grid_columnconfigure(0, weight = 1)
+
+    # File input UI label frame
+    self.decomp.files = LabelFrame(self.decomp, text = 'File input')
+    self.decomp.files.grid(row = 0, column = 0, padx = 7, pady = 5, ipady = 2, sticky = W+E)
+
+    ## Compressed file
+    Label(self.decomp.files, text = 'Compressed').grid(row = 0, column = 0)
+
+    self.decomp.files.openButton = Button(self.decomp.files, text = 'open', width = 0,
+        command = lambda: self.openFile('comp'))
+    self.decomp.files.openButton.grid(row = 0, column = 1)
+    
+    self.decomp.files.inputPathEntry = Entry(self.decomp.files, state = 'readonly',
+        textvariable = self.paths['comp'])
+    self.decomp.files.inputPathEntry.grid(row = 0, column = 2, padx = 5, sticky = W+E)
+    self.decomp.files.grid_columnconfigure(2, weight = 1)
+
+    ## Huffman code file
+    Label(self.decomp.files, text = 'Huffman code').grid(row = 1, column = 0)
+
+    self.decomp.files.openButton = Button(self.decomp.files, text = 'open', width = 0,
+        command = lambda: self.openFile('comp'))
+    self.decomp.files.openButton.grid(row = 1, column = 1)
+    
+    self.decomp.files.inputPathEntry = Entry(self.decomp.files, state = 'readonly',
+        textvariable = self.paths['comp'])
+    self.decomp.files.inputPathEntry.grid(row = 1, column = 2, padx = 5, sticky = W+E)
+    self.decomp.files.grid_columnconfigure(2, weight = 1)
+
+    # Compress button
+    self.decomp.execute = Button(self.decomp, text = 'Compress!', command = self.decompress)
+    self.decomp.execute.grid(row = 1, column = 0, padx = 5, pady = 2, sticky = W+E)
+
+    # Text widgets
+    ## Original text (before compressed)
+    self.decomp.original = Frame(self.decomp)
+    self.decomp.original.grid(row = 2, column = 0, pady = 2, stick = W+E+N+S)
+    self.decomp.original.grid_rowconfigure(0, weight = 1)
+    self.decomp.original.grid_columnconfigure(0, weight = 1)
+    self.decomp.original.scroll = Scrollbar(self.decomp.original)
+    self.decomp.original.scroll.grid(row = 0, column = 1, stick = N+S)
+    self.decomp.original.box = Text(self.decomp.original,
+        yscrollcommand = self.decomp.original.scroll.set)
+    self.decomp.original.box.grid(row = 0, column = 0, stick = W+E+N+S)
+    self.decomp.original.scroll.config(command = self.decomp.original.box.yview)
+    self.decomp.grid_rowconfigure(2, weight = 1)
+
+    ## Compressed text
+    self.decomp.compressed = Frame(self.decomp)
+    self.decomp.compressed.grid(row = 3, column = 0, pady = 2, stick = W+E+N+S)
+    self.decomp.compressed.grid_rowconfigure(0, weight = 1)
+    self.decomp.compressed.grid_columnconfigure(0, weight = 1)
+    self.decomp.compressed.scroll = Scrollbar(self.decomp.compressed)
+    self.decomp.compressed.scroll.grid(row = 0, column = 1, stick = N+S)
+    self.decomp.compressed.box = Text(self.decomp.compressed,
+        yscrollcommand = self.decomp.compressed.scroll.set)
+    self.decomp.compressed.box.grid(row = 0, column = 0, stick = W+E+N+S)
+    self.decomp.compressed.scroll.config(command = self.decomp.compressed.box.yview)
+    self.decomp.grid_rowconfigure(3, weight = 1)
 
 
   def display(self, textBox, text):
@@ -119,6 +176,9 @@ class Application(Frame):
       open(self.paths['comp'].get()+'.huff', 'w').write(json.dumps(self.codebook))
       self.display(self.comp.compressed.box, self.compressed)
       self.displayHuffmanTree(HuffmanCode.reconstrucHuffmanTree(self.codebook))
+
+  def decompress(self):
+    pass
 
 
 def main():
