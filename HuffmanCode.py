@@ -16,10 +16,15 @@ def getFrequencies(text):
 
 # Returns Huffman tree constructed from the frequency dictionary.
 def encode(frequencies):
-  p = Heap()
   # Construct priority queue with high priorities for low frequencies.
+  p = Heap()
   for char, freq in frequencies.iteritems():
     p.insert((freq, char))
+  # Special cases
+  if len(frequencies) == 0:  # Empty input
+    return HuffmanNode()
+  if len(frequencies) == 1:  # Repetition of same characters
+    return HuffmanNode(p.pop()[1])
   # Construct Huffman tree.
   while len(p) > 1:
     left = p.pop()
@@ -29,8 +34,8 @@ def encode(frequencies):
   return p.pop()[1]
 
 # Returns Huffman encoded codebook from the Huffman Tree.
-# Recursively calculates the correspoding codewords to each characters.
 def getHuffmanCode(root):
+  # Recursively calculate the correspoding codewords to each characters
   def traverseHuffmanTree(node, codebook, path):
     if node.left:
       path.append('0')
