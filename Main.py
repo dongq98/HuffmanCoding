@@ -17,7 +17,7 @@ class Application(Frame):
     self.paths['comp'] = StringVar()
     self.paths['dcmp'] = StringVar()
     self.paths['huff'] = StringVar()
-    
+
     # Basic GUI settings
     self.master.title("Huffman Coding")
     self.master.resizable(width = FALSE, height = FALSE)
@@ -49,7 +49,7 @@ class Application(Frame):
     self.comp.files.openButton = Button(self.comp.files, text = 'open', width = 0,
         command = lambda: self.openFile('comp'))
     self.comp.files.openButton.grid(row = 0, column = 1)
-    
+
     ## Entry for displaying file path
     self.comp.files.inputPathEntry = Entry(self.comp.files, state = 'readonly',
         textvariable = self.paths['comp'])
@@ -103,7 +103,7 @@ class Application(Frame):
     self.decomp.files.openButton = Button(self.decomp.files, text = 'open', width = 0,
         command = lambda: self.openFile('comp'))
     self.decomp.files.openButton.grid(row = 0, column = 1)
-    
+
     self.decomp.files.inputPathEntry = Entry(self.decomp.files, state = 'readonly',
         textvariable = self.paths['comp'])
     self.decomp.files.inputPathEntry.grid(row = 0, column = 2, padx = 5, sticky = W+E)
@@ -115,7 +115,7 @@ class Application(Frame):
     self.decomp.files.openButton = Button(self.decomp.files, text = 'open', width = 0,
         command = lambda: self.openFile('comp'))
     self.decomp.files.openButton.grid(row = 1, column = 1)
-    
+
     self.decomp.files.inputPathEntry = Entry(self.decomp.files, state = 'readonly',
         textvariable = self.paths['comp'])
     self.decomp.files.inputPathEntry.grid(row = 1, column = 2, padx = 5, sticky = W+E)
@@ -166,7 +166,7 @@ class Application(Frame):
     except:
       return False
 
-  def displayHuffmanTree(self, root):
+  def drawHuffmanTree(self, root):
     pass
 
   def compress(self):
@@ -175,7 +175,7 @@ class Application(Frame):
       open(self.paths['comp'].get()+'.comp', 'w').write(self.compressed)
       open(self.paths['comp'].get()+'.huff', 'w').write(json.dumps(self.codebook))
       self.display(self.comp.compressed.box, self.compressed)
-      self.displayHuffmanTree(HuffmanCode.reconstrucHuffmanTree(self.codebook))
+      self.drawHuffmanTree(HuffmanCode.reconstrucHuffmanTree(self.codebook))
 
   def decompress(self):
     pass
