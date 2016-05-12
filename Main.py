@@ -160,22 +160,27 @@ class Application(Frame):
   def openFile(self, fileType):
     try:
       self.paths[fileType].set(tkFileDialog.askopenfilename())
-      self.files[fileType] = open(self.paths[fileType].get(), 'r').read()
-      self.display(self.comp.original.box, self.files[fileType])
-      return True
-    except:
-      return False
+    except IOError:
+      return
+    self.files[fileType] = open(self.paths[fileType].get(), 'r').read()
+    self.display(self.comp.original.box, self.files[fileType])
 
   def drawHuffmanTree(self, root):
     pass
 
   def compress(self):
-    if 'comp' in self.files:
+    if 'comp' in self.files:  # If a file to be compressed is open
       self.codebook, self.compressed = HuffmanCode.compress(self.files['comp'])
+      try:
+        map(unicode, self.codebook)
+      except UnicodeDecodeError:
+        print 'Unicode decode error'
+        return  # TODO: Show error message
+
       open(self.paths['comp'].get()+'.comp', 'w').write(self.compressed)
       open(self.paths['comp'].get()+'.huff', 'w').write(json.dumps(self.codebook))
       self.display(self.comp.compressed.box, self.compressed)
-      self.drawHuffmanTree(HuffmanCode.reconstrucHuffmanTree(self.codebook))
+      self.drawHuffmanTree(HuffmanCode.reconstructHuffmanTree(self.codebook))
 
   def decompress(self):
     pass
