@@ -169,6 +169,7 @@ class Application(Frame):
       self.display(self.decomp.compressed.box, self.files[fileType])
     else:  # fileType == 'huff'
       # self.drawHuffmanTree(root)
+      pass
 
   def drawHuffmanTree(self, root):
     pass
