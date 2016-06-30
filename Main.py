@@ -22,8 +22,18 @@ class Application(Frame):
     self.master.title("Huffman Coding")
     self.master.resizable(width = FALSE, height = FALSE)
     self.grid()
-    self.canvas = Canvas(self, width = 600, height = 600)
+
+    # Canvas
+    self.canvas = Frame(self)
     self.canvas.grid(row = 0, column = 0)
+    self.canvas.scrollX = Scrollbar(self.canvas, orient = HORIZONTAL)
+    self.canvas.scrollX.grid(row = 1, column = 0, stick = W+E)
+    self.canvas.scrollY = Scrollbar(self.canvas, orient = VERTICAL)
+    self.canvas.scrollY.grid(row = 0, column = 1, stick = N+S)
+    self.canvas.c = Canvas(self.canvas, width = 600, height = 600,
+                           xscrollcommand = self.canvas.scrollX.set,
+                           yscrollcommand = self.canvas.scrollY.set)
+    self.canvas.c.grid(row = 0, column = 0)
 
     # Menus
     self.tabs = Notebook(self, width = 300, height = 600)
@@ -153,10 +163,6 @@ class Application(Frame):
     self.decomp.grid_rowconfigure(3, weight = 1)
 
 
-  def display(self, textBox, text):
-    textBox.delete("1.0", END)
-    textBox.insert("1.0", text)
-
   def openFile(self, fileType):
     try:
       self.paths[fileType].set(tkFileDialog.askopenfilename())
@@ -168,11 +174,91 @@ class Application(Frame):
     elif fileType == 'dcmp':
       self.display(self.decomp.compressed.box, self.files[fileType])
     else:  # fileType == 'huff'
-      # self.drawHuffmanTree(root)
-      pass
+      self.drawHuffmanTree(HuffmanCode.reconstructHuffmanTree(json.loads(self.files[fileType])))
+
+  def display(self, textBox, text):
+    textBox.delete("1.0", END)
+    textBox.insert("1.0", text)
 
   def drawHuffmanTree(self, root):
-    pass
+    # Copy
+    s = []
+    node = root
+    s.append(None)
+
+    class Node:
+      def __init__(self, d):
+        self.__dict__ = d
+    newRoot = Node({'value': None,
+                    'left': None,
+                    'right': None,
+                    'parent': None,
+                    'position': None})
+    clone = newRoot
+
+    while len(s) > 0:
+      if isinstance(node, HuffmanCode.HuffmanNode):
+        if not clone.left:
+          s.append(node)
+          clone.left = Node({'value': None,
+                             'left': None,
+                             'right': None,
+                             'parent': clone,
+                             'position': None})
+          node = node.left
+          clone = clone.left
+        elif not clone.right:
+          s.append(node)
+          clone.right = Node({'value': None,
+                              'left': None,
+                              'right': None,
+                              'parent': clone,
+                              'position': None})
+          node = node.right
+          clone = clone.right
+        else:
+          node = s.pop()
+          clone = clone.parent
+      else:
+        clone.value = node
+        node = s.pop()
+        clone = clone.parent
+
+    # Set positions
+    s = []
+    node = newRoot
+    x, y = 0, 0
+    while len(s) > 0 or node:
+      if node:
+        s.append((node, y))
+        node = node.left
+        y = y + 1
+      else:
+        node, y = s.pop()
+        node.position = (x, y)
+        node = node.right
+        x = x + 1
+        y = y + 1
+
+    # Draw nodes
+    s = []
+    node = newRoot
+    s.append(node)
+    while len(s) > 0:
+      node = s.pop()
+      if node.right:
+        s.append(node.right)
+        self.canvas.c.create_line(node.position[0] * 20, node.position[1] * 50,
+                                  node.right.position[0] * 20, node.right.position[1] * 50)
+      if node.left:
+        s.append(node.left)
+        self.canvas.c.create_line(node.position[0] * 20, node.position[1] * 50,
+                                  node.left.position[0] * 20, node.left.position[1] * 50)
+      self.canvas.c.create_oval(node.position[0] * 20 - 15, node.position[1] * 50 - 15,
+                                node.position[0] * 20 + 15, node.position[1] * 50 + 15,
+                                fill = '#FFFFFF')
+      self.canvas.c.create_text(node.position[0] * 20, node.position[1] * 50, text = node.value)
+    self.canvas.c.config(scrollregion = self.canvas.c.bbox("all"))
 
   def compress(self):
     if 'comp' in self.files:  # If a file to be compressed is open
