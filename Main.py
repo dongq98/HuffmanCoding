@@ -26,14 +26,16 @@ class Application(Frame):
     # Canvas
     self.canvas = Frame(self)
     self.canvas.grid(row = 0, column = 0)
+    self.canvas.c = Canvas(self.canvas, width = 600, height = 600)
+    self.canvas.c.grid(row = 0, column = 0)
     self.canvas.scrollX = Scrollbar(self.canvas, orient = HORIZONTAL)
     self.canvas.scrollX.grid(row = 1, column = 0, stick = W+E)
     self.canvas.scrollY = Scrollbar(self.canvas, orient = VERTICAL)
     self.canvas.scrollY.grid(row = 0, column = 1, stick = N+S)
-    self.canvas.c = Canvas(self.canvas, width = 600, height = 600,
-                           xscrollcommand = self.canvas.scrollX.set,
-                           yscrollcommand = self.canvas.scrollY.set)
-    self.canvas.c.grid(row = 0, column = 0)
+    self.canvas.c.config(xscrollcommand = self.canvas.scrollX.set,
+                         yscrollcommand = self.canvas.scrollY.set)
+    self.canvas.scrollX.config(command = self.canvas.c.xview)
+    self.canvas.scrollY.config(command = self.canvas.c.yview)
 
     # Menus
     self.tabs = Notebook(self, width = 300, height = 600)
