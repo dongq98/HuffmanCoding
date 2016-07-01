@@ -1,6 +1,7 @@
 from Tkinter import *
 from ttk import *
 import tkFileDialog
+import tkMessageBox
 import json
 
 import HuffmanCode
@@ -269,8 +270,8 @@ class Application(Frame):
       try:
         map(unicode, self.codebook)
       except UnicodeDecodeError:
-        print 'Unicode decode error'
-        return  # TODO: Show error message
+        tkMessageBox.showwarning("Error",
+          "Unicode decode error: invalid character in the text file.")
 
       open(self.paths['comp'].get()+'.comp', 'w').write(self.compressed)
       open(self.paths['comp'].get()+'.huff', 'w').write(json.dumps(self.codebook))
