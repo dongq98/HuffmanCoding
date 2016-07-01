@@ -269,14 +269,13 @@ class Application(Frame):
       self.codebook, self.compressed = HuffmanCode.compress(self.files['comp'])
       try:
         map(unicode, self.codebook)
+        open(self.paths['comp'].get()+'.comp', 'w').write(self.compressed)
+        open(self.paths['comp'].get()+'.huff', 'w').write(json.dumps(self.codebook))
+        self.display(self.comp.compressed.box, self.compressed)
+        self.drawHuffmanTree(HuffmanCode.reconstructHuffmanTree(self.codebook))
       except UnicodeDecodeError:
         tkMessageBox.showwarning("Error",
           "Unicode decode error: invalid character in the text file.")
-
-      open(self.paths['comp'].get()+'.comp', 'w').write(self.compressed)
-      open(self.paths['comp'].get()+'.huff', 'w').write(json.dumps(self.codebook))
-      self.display(self.comp.compressed.box, self.compressed)
-      self.drawHuffmanTree(HuffmanCode.reconstructHuffmanTree(self.codebook))
 
   def decompress(self):
     pass
