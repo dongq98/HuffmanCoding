@@ -178,7 +178,15 @@ class Application(Frame):
       elif fileType == 'dcmp':
         self.display(self.decomp.compressed.box, self.files[fileType])
       else:  # fileType == 'huff'
-        self.drawHuffmanTree(HuffmanCode.reconstructHuffmanTree(json.loads(self.files[fileType])))
+        try:
+          self.drawHuffmanTree(
+                  HuffmanCode.reconstructHuffmanTree(json.loads(self.files[fileType])))
+        except:
+          tkMessageBox.showwarning("Error",
+                  "Could not construct Huffman tree from the codebook file.")
+          self.paths[fileType].set("")
+          self.files.pop(fileType)
+
 
   def display(self, textBox, text):
     textBox.delete("1.0", END)
@@ -272,7 +280,7 @@ class Application(Frame):
         map(unicode, self.codebook)
       except UnicodeDecodeError:
         tkMessageBox.showwarning("Error",
-          "Unicode decode error: invalid character in the text file.")
+                "Unicode decode error: invalid character in the text file.")
       else:
         open(self.paths['comp'].get()+'.comp', 'w').write(self.compressed)
         open(self.paths['comp'].get()+'.huff', 'w').write(json.dumps(self.codebook))
@@ -282,7 +290,13 @@ class Application(Frame):
   def decompress(self):
     if 'dcmp' in self.files and 'huff' in self.files:  # If files to be decompressed are open
       self.codebook = json.loads(self.files['huff'])
-      # self.original = HuffmanCode.decompress(self.codebook, self.files['dcmp'])
+      try:
+        self.decompressed = HuffmanCode.decompress(self.codebook, self.files['dcmp'])
+        open(self.paths['dcmp'].get()+'.dcmp', 'w').write(self.decompressed)
+        self.display(self.decomp.decompressed.box, self.decompressed)
+      except TypeError:
+        tkMessageBox.showwarning("Error",
+                "The encoded data and the codebook does not match.")
 
 def main():
   Application().mainloop()
