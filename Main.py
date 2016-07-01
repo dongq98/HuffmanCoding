@@ -193,7 +193,10 @@ class Application(Frame):
     textBox.insert("1.0", text)
 
   def drawHuffmanTree(self, root):
-    # Copy
+    # Clear canvas
+    self.canvas.c.delete("all")
+
+    # Copy Huffman tree
     s = []
     node = root
     s.append(None)
