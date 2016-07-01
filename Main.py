@@ -250,16 +250,17 @@ class Application(Frame):
       node = s.pop()
       if node.right:
         s.append(node.right)
-        self.canvas.c.create_line(node.position[0] * 20, node.position[1] * 50,
-                                  node.right.position[0] * 20, node.right.position[1] * 50)
+        self.canvas.c.create_line(node.position[0]*20 + 15, node.position[1]*50 + 15,
+                                  node.right.position[0]*20 + 15, node.right.position[1]*50 + 15)
       if node.left:
         s.append(node.left)
-        self.canvas.c.create_line(node.position[0] * 20, node.position[1] * 50,
-                                  node.left.position[0] * 20, node.left.position[1] * 50)
-      self.canvas.c.create_oval(node.position[0] * 20 - 15, node.position[1] * 50 - 15,
-                                node.position[0] * 20 + 15, node.position[1] * 50 + 15,
+        self.canvas.c.create_line(node.position[0]*20 + 15, node.position[1]*50 + 15,
+                                  node.left.position[0]*20 + 15, node.left.position[1]*50 + 15)
+      self.canvas.c.create_oval(node.position[0]*20, node.position[1]*50,
+                                node.position[0]*20 + 30, node.position[1]*50 + 30,
                                 fill = '#FFFFFF')
-      self.canvas.c.create_text(node.position[0] * 20, node.position[1] * 50, text = node.value)
+      self.canvas.c.create_text(node.position[0]*20 + 15, node.position[1]*50 + 15,
+                                text = node.value)
     self.canvas.c.config(scrollregion = self.canvas.c.bbox("all"))
 
   def compress(self):
@@ -278,7 +279,6 @@ class Application(Frame):
 
   def decompress(self):
     pass
-
 
 def main():
   Application().mainloop()
