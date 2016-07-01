@@ -73,10 +73,13 @@ class Application(Frame):
     self.comp.execute = Button(self.comp, text = 'Compress!', command = self.compress)
     self.comp.execute.grid(row = 1, column = 0, padx = 5, pady = 2, sticky = W+E)
 
+    self.comp.rate = Label(self.comp, text = 'Compression rate: ')
+    self.comp.rate.grid(row = 2, column = 0, padx = 5, pady = 4, sticky = W+E)
+
     # Text widgets
     ## Original text (before compressed)
     self.comp.original = Frame(self.comp)
-    self.comp.original.grid(row = 2, column = 0, pady = 2, stick = W+E+N+S)
+    self.comp.original.grid(row = 3, column = 0, pady = 2, stick = W+E+N+S)
     self.comp.original.grid_rowconfigure(0, weight = 1)
     self.comp.original.grid_columnconfigure(0, weight = 1)
     self.comp.original.scroll = Scrollbar(self.comp.original)
@@ -85,11 +88,11 @@ class Application(Frame):
         yscrollcommand = self.comp.original.scroll.set)
     self.comp.original.box.grid(row = 0, column = 0, stick = W+E+N+S)
     self.comp.original.scroll.config(command = self.comp.original.box.yview)
-    self.comp.grid_rowconfigure(2, weight = 1)
+    self.comp.grid_rowconfigure(3, weight = 1)
 
     ## Compressed text
     self.comp.compressed = Frame(self.comp)
-    self.comp.compressed.grid(row = 3, column = 0, pady = 2, stick = W+E+N+S)
+    self.comp.compressed.grid(row = 4, column = 0, pady = 2, stick = W+E+N+S)
     self.comp.compressed.grid_rowconfigure(0, weight = 1)
     self.comp.compressed.grid_columnconfigure(0, weight = 1)
     self.comp.compressed.scroll = Scrollbar(self.comp.compressed)
@@ -98,7 +101,7 @@ class Application(Frame):
         yscrollcommand = self.comp.compressed.scroll.set)
     self.comp.compressed.box.grid(row = 0, column = 0, stick = W+E+N+S)
     self.comp.compressed.scroll.config(command = self.comp.compressed.box.yview)
-    self.comp.grid_rowconfigure(3, weight = 1)
+    self.comp.grid_rowconfigure(4, weight = 1)
 
     # =========================
     #  Menu / Decompression
@@ -289,6 +292,9 @@ class Application(Frame):
         open(self.paths['comp'].get()+'.huff', 'w').write(json.dumps(self.codebook))
         self.display(self.comp.compressed.box, self.compressed)
         self.drawHuffmanTree(HuffmanCode.reconstructHuffmanTree(self.codebook))
+        origLen = len(self.files['comp'])
+        compLen = len(self.compressed) / 8.0
+        self.comp.rate.config(text = 'Compression rate: ' + str(compLen/origLen*100) + '%')
 
   def decompress(self):
     if 'dcmp' in self.files and 'huff' in self.files:  # If files to be decompressed are open
