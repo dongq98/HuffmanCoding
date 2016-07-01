@@ -169,10 +169,10 @@ class Application(Frame):
   def openFile(self, fileType):
     try:
       self.paths[fileType].set(tkFileDialog.askopenfilename())
+      self.files[fileType] = open(self.paths[fileType].get(), 'r').read()
     except IOError:
       return
     else:
-      self.files[fileType] = open(self.paths[fileType].get(), 'r').read()
       if fileType == 'comp':
         self.display(self.comp.original.box, self.files[fileType])
       elif fileType == 'dcmp':
