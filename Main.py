@@ -171,13 +171,14 @@ class Application(Frame):
       self.paths[fileType].set(tkFileDialog.askopenfilename())
     except IOError:
       return
-    self.files[fileType] = open(self.paths[fileType].get(), 'r').read()
-    if fileType == 'comp':
-      self.display(self.comp.original.box, self.files[fileType])
-    elif fileType == 'dcmp':
-      self.display(self.decomp.compressed.box, self.files[fileType])
-    else:  # fileType == 'huff'
-      self.drawHuffmanTree(HuffmanCode.reconstructHuffmanTree(json.loads(self.files[fileType])))
+    else:
+      self.files[fileType] = open(self.paths[fileType].get(), 'r').read()
+      if fileType == 'comp':
+        self.display(self.comp.original.box, self.files[fileType])
+      elif fileType == 'dcmp':
+        self.display(self.decomp.compressed.box, self.files[fileType])
+      else:  # fileType == 'huff'
+        self.drawHuffmanTree(HuffmanCode.reconstructHuffmanTree(json.loads(self.files[fileType])))
 
   def display(self, textBox, text):
     textBox.delete("1.0", END)
@@ -269,16 +270,19 @@ class Application(Frame):
       self.codebook, self.compressed = HuffmanCode.compress(self.files['comp'])
       try:
         map(unicode, self.codebook)
+      except UnicodeDecodeError:
+        tkMessageBox.showwarning("Error",
+          "Unicode decode error: invalid character in the text file.")
+      else:
         open(self.paths['comp'].get()+'.comp', 'w').write(self.compressed)
         open(self.paths['comp'].get()+'.huff', 'w').write(json.dumps(self.codebook))
         self.display(self.comp.compressed.box, self.compressed)
         self.drawHuffmanTree(HuffmanCode.reconstructHuffmanTree(self.codebook))
-      except UnicodeDecodeError:
-        tkMessageBox.showwarning("Error",
-          "Unicode decode error: invalid character in the text file.")
 
   def decompress(self):
-    pass
+    if 'dcmp' in self.files and 'huff' in self.files:  # If files to be decompressed are open
+      self.codebook = json.loads(self.files['huff'])
+      # self.original = HuffmanCode.decompress(self.codebook, self.files['dcmp'])
 
 def main():
   Application().mainloop()
