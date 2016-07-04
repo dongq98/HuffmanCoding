@@ -9,7 +9,7 @@ Flying Spaghetti Monster 위키피디아 항목의 일부를 압축하였다.
 해당 텍스트 파일은 examples 폴더에 위치해 있다.
 ![Huffman1](https://github.com/dongq98/HuffmanCoding/blob/master/screenshots/Huffman1.png)
 ![Huffman2](https://github.com/dongq98/HuffmanCoding/blob/master/screenshots/Huffman2.png)
-압축률은 약 55.2%로 압축이 잘 되었다.
+압축률은 약 55.3%로 압축이 잘 되었다.
 
 ### 압축 해제
 
